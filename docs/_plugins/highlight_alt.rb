@@ -73,12 +73,10 @@ eos
 
       def render_rouge(code)
         require 'rouge'
-        formatter = Rouge::Formatters::HTML.new(line_numbers: @options[:linenos], wrap: false)
-        lexer = Rouge::Lexer.find_fancy(@lang, code) || Rouge::Lexers::PlainText
-        code = remove_holderjs(code)
-        code = remove_example_classes(code)
-        code = formatter.format(lexer.lex(code))
-        "<div class=\"highlight\"><pre>#{code}</pre></div>"
+        html_code = remove_example_classes(remove_holderjs(code))
+        haml_code = Html2haml::HTML.new(html_code, ruby19_style_attributes: true).to_haml
+
+        "#{format_html(html_code, 'html')}#{format_html(haml_code, 'haml')}"
       end
 
       def add_code_tag(code)
@@ -86,6 +84,16 @@ eos
         code = code.sub(/<pre>\n*/,'<pre><code class="language-' + @lang.to_s.gsub("+", "-") + '" data-lang="' + @lang.to_s + '">')
         code = code.sub(/\n*<\/pre>/,"</code></pre>")
         code.strip
+      end
+
+      private
+
+      def format_html(code, lang)
+        formatter = Rouge::Formatters::HTML.new(line_numbers: @options[:linenos], wrap: false)
+        lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
+        formatted_code = formatter.format(lexer.lex(code))
+
+        "<div class=\"highlight\"><pre>#{formatted_code}</pre></div>"
       end
 
     end

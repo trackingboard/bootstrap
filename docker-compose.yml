@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  bootstrap-docs:
+    build: ./
+    command: bash -c "bundle exec jekyll serve --port 9001"
+    container_name: bootstrap-docs
+    restart: always
+    networks:
+      - back
+      - front
+    environment:
+      - VIRTUAL_HOST=bootstraphaml.com
+      - VIRTUAL_PORT=9001
+      - LETSENCRYPT_HOST=bootstraphaml.com
+      - LETSENCRYPT_EMAIL=admin@bootstraphaml.com
+networks:
+  front:
+    external:
+      name: traffic_front
+  back:
+    external:
+      name: traffic_back

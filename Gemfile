@@ -5,4 +5,5 @@ group :development, :test do
   gem 'jekyll-redirect-from', '~> 0.12.0'
   gem 'jekyll-sitemap', '~> 0.12.0'
   gem 'scss_lint', '~> 0.51.0'
+  gem 'html2haml'
 end
